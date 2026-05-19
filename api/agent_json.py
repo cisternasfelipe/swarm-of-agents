@@ -3,6 +3,8 @@ from pydantic import BaseModel
 import asyncio
 from dotenv import load_dotenv
 import os
+from uuid import UUID
+from uuid import uuid4
 from agentscope.agent import ReActAgent, UserAgent
 from agentscope.formatter import OpenAIChatFormatter
 from agentscope.memory import InMemoryMemory
@@ -22,16 +24,23 @@ class AgentCreator(BaseModel):
     agent_tools: list
     knowledge: list
     msg: str
-    user_id: int
-    memory : dict
+    user_UUID: str | None
     
 memorys = {}
         
 agent_json=FastAPI()
 @agent_json.post("/agents")
 
+
+    
+    
+
 async def get_agent(agent: AgentCreator):
     """first prototipe"""
+    
+    if agent.user_UUID == None:
+        agent.user_UUID = uuid4()
+            
     
     functions_list = [REGISTRY_TOOLS[tool] for tool in agent.agent_tools if tool in REGISTRY_TOOLS] 
     
