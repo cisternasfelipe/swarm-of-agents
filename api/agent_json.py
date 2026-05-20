@@ -41,14 +41,14 @@ async def get_agent(agent: AgentCreator):
     if agent.user_UUID == None:
         agent.user_UUID = uuid4()
             
-    
-    functions_list = [REGISTRY_TOOLS[tool] for tool in agent.agent_tools if tool in REGISTRY_TOOLS] 
+    if agent.user_UUID not in memorys:
+        functions_list = [REGISTRY_TOOLS[tool] for tool in agent.agent_tools if tool in REGISTRY_TOOLS]
     
     toolkit = registry_tool(functions_list)
     
     msg = Msg(name="User", content=agent.msg, role="user")
     
-    cryptopeper = ReActAgent(
+    memorys[agent.user_UUID]= ReActAgent(
         name = agent.name,
         sys_prompt= agent.prompt,
         model = OpenAIChatModel(
